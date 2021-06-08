@@ -15,9 +15,23 @@ import mongoose from 'mongoose';
 //     "content": "HTML"
 // }
 
-const { Schema, model } = mongoose;
+const { Schema, model } = mongoose; // Schema is the structure, Model handles the interaction with db e.g. BlogModel.find()
 
-const BlogSchema = new Schema(
+const CommentSchema = new mongoose.Schema(
+  {
+    author: { type: String, required: true },
+    comment: { type: String, required: true },
+    rate: {
+      type: Number,
+      min: [1, 'Minimum rating of 1!'],
+      max: [5, 'Maximum rating of 5!'],
+      default: 1,
+    },
+  },
+  { timestamps: true }
+);
+
+const BlogsSchema = new Schema(
   {
     category: {
       type: String,
@@ -42,21 +56,17 @@ const BlogSchema = new Schema(
       },
     },
     author: {
-      name: {
-        type: String,
-        required: true,
-      },
-      avatar: {
-        type: String,
-        required: true,
-      },
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'Author',
     },
     content: {
       type: String,
       required: true,
     },
+    comments: { default: [], type: [CommentSchema] },
   },
   { timestamps: true }
 );
 
-export default model('Blog', BlogSchema);
+export default model('Blog', BlogsSchema);

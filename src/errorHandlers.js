@@ -1,5 +1,5 @@
 export const badRequestErrorHandler = (err, req, res, next) => {
-  if (err.status === 400) {
+  if (err.status === 400 || err.name === 'ValidationError') {
     res.status(400).send(err.errors);
   } else {
     next(err);
@@ -15,5 +15,9 @@ export const notFoundErrorHandler = (err, req, res, next) => {
 };
 
 export const catchAllErrorHandler = (err, req, res, next) => {
+  // if (err.name === 'ValidationError') {
+  // res.status(400).send(err);
+  // } else {
   res.status(500).send('Generic Server Error');
+  // }
 };
